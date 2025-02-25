@@ -208,7 +208,7 @@ def setup_routes(app):
     @app.route('/detail/<int:no>/update',methods=['POST'])
     def updatePage(no):
         event = Event.query.filter_by(no=no).first()
-        return render_template('event_UD.html', event=event, no=no)
+        return render_template('update.html', event=event, no=no)
     
     # 이벤트 업데이트 기능
     @app.route('/detail/<int:no>/updating',methods=['PUT','POST'])
