@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트 수정 및 삭제</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/update.css">
+</head>
+<body>
+    <header>
+        <!-- 헤더 -->
+        <h1><a href="/" id='home'>홈페이지</a></h1>
+        <section class="headerLeft">
+            <div>
+                <form action="searchEvent" method="POST">
+                    <input type="text" id="searchEventName" name="searchEventName">
+                    <button type="submit">검색</button>
+                </form>
+            </div>
+            <div>
+                <ul>
+                    <li>{% if session.user_id == 'admit' %} <a href='/upload'>행사 일정 업로드</a>{% else %}{% endif %}</li>
+                    <li>{% if session %} {{session.user_id}}님 &nbsp;&nbsp;<a href='/logout'>로그아웃</a> {% else %}<a href="/login">로그인</a> {% endif %} </li>
+                    <li>{% if session %} <a href="/mypage">나의 페이지</a> {% else %}<a href="/signup">회원가입</a> {% endif %}</li>
+                </ul>
+            </div>
+        </section>
+    </header>
+    <section class="updateContainer">
+        <div>
+            <h2>{{event.eventName}} 수정</h2>
+            <form action="/detail/{{no}}/updating" method="POST" enctype="multipart/form-data">
+                <div>
+                    <label for="eventName">행사 이름:</label>
+                    <input type="text" id="eventName" name="eventName" value="{{event.eventName}}" required>
+                </div>
+                <div>
+                    <label for="startDate">행사 시작일:</label>
+                    <input type="date" id="startDate" name="startDate" value="{{event.startDate}}" required>
+                </div>
+                <div>
+                    <label for="endDate">행사 종료일:</label>
+                    <input type="date" id="endDate" name="endDate" value="{{event.endDate}}"required>
+                </div>
+                <div>
+                    <label for="location">행사 장소:</label>
+                    <input type="text" id="location" name="location" value="{{event.location}}" required>
+                </div>
+                <div>
+                    <label for="explain">설 명:</label>
+                    <textarea id="explain" name="explain" required>{{event.explain}}</textarea>
+                </div>
+                <div>
+                    <label for="image">이미지 업로드:</label>
+                    <input type="file" id="image" name="image" accept="image/*" required>
+                </div>
+                <div>
+                    <button type="submit" id="submit_button">수정</button>
+                </div>
+            </form>
+        </div>
+    </section>
+    <footer>
+        
+    </footer>
+</body>
+</html>
