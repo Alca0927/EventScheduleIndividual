@@ -89,26 +89,35 @@ def setup_routes(app):
     @login_required
     def list_mypage():
         # 현재 로그인한 사용자의 id가 mypage 테이블의 id와 일치한다고 가정
-        mypages = mypage.query.filter_by(id=current_user.id).all()
+        favorites = mypage.query.filter_by(id=current_user.id).all()
+        event_names = [fav.eventName for fav in favorites]
+        if event_names:
+            mypages = Event.query.filter(Event.eventName.in_(event_names)).all()
+        else:
+            mypages=[]
+
         events = []
         for mp in mypages:
             # 날짜 형식이 "YYYYMMDD"라면 "YYYY-MM-DD"로 변환, 이미 형식이 맞다면 그대로 사용
-            if len(mp.my_startDate) == 8:
-                start = f"{mp.my_startDate[:4]}-{mp.my_startDate[4:6]}-{mp.my_startDate[6:]}"
-            else:
-                start = mp.my_startDate
-            if len(mp.my_endDate) == 8:
-                end = f"{mp.my_endDate[:4]}-{mp.my_endDate[4:6]}-{mp.my_endDate[6:]}"
-            else:
-                end = mp.my_endDate
+            # if len(mp.startDate) == 8:
+            #     start = f"{mp.startDate[:4]}-{mp.startDate[4:6]}-{mp.startDate[6:]}"
+            # else:
+            #     start = mp.startDate
+            # if len(mp.endDate) == 8:
+            #     end = f"{mp.endDate[:4]}-{mp.endDate[4:6]}-{mp.endDate[6:]}"
+            # else:
+            #     end = mp.endDate
+            start = mp.startDate
+            end = mp.endDate
 
             events.append({
                 "startDate": start,
                 "endDate": end,
-                "eventName": mp.my_eventName,   # 새로 추가된 이벤트 이름 사용
-                "location": mp.my_location,
-                "explain": mp.my_explain,
-                "image": mp.my_image
+                "eventName": mp.eventName,   # 새로 추가된 이벤트 이름 사용
+                "location": mp.location,
+                "explain": mp.explain,
+                "image": mp.image,
+                "no": mp.no
             })
         return render_template('mypage.html', events=events, username=current_user.username)
 
@@ -127,23 +136,11 @@ def setup_routes(app):
             event = Event.query.filter_by(no=no).first()
 
             id = user.id
-            name = user.username
             eventName = event.eventName
-            startDate = event.startDate
-            endDate = event.endDate
-            explain = event.explain
-            location = event.location
-            image = event.image
 
             new_mypage= mypage(
                 id=id,
-                my_name=name,
-                my_eventName=eventName,
-                my_startDate=startDate,
-                my_endDate=endDate,
-                my_location=location,
-                my_explain=explain,
-                my_image=image
+                eventName=eventName,
                 )
             
             db.session.add(new_mypage)
@@ -151,15 +148,16 @@ def setup_routes(app):
             return redirect(url_for('get_event',no=no))
 
     # 즐겨찾기 삭제
-    @app.route('/mypage/delete/<eventName>', methods=['POST'])
+    @app.route('/mypage/delete/<int:no>', methods=['POST'])
     @login_required
-    def delete_mypage(eventName):
-        my_page = mypage.query.filter_by(my_eventName=eventName, id=current_user.id).first() # 현재 로그인한 사용자의 메모만 선택 
-        event = Event.query.filter_by(eventName=eventName).first()
+    def delete_mypage(no):
+        event = Event.query.filter_by(no=no).first()
+        my_page = mypage.query.filter_by(eventName=event.eventName, id=current_user.id).first() # 현재 로그인한 사용자의 메모만 선택 
+        
         if my_page:
             db.session.delete(my_page)
             db.session.commit()
-            return redirect(url_for('get_event',no=event.no))
+            return redirect(url_for('get_event',no=no))
         else:
             abort(404, description="Memo not found or not authorized")
     
@@ -169,7 +167,7 @@ def setup_routes(app):
         event = Event.query.filter_by(no=no).first()
         if session:
             favoritesEvent = mypage.query.filter_by(id=current_user.id).all()
-            favorite_event_names = [fav.my_eventName for fav in favoritesEvent]
+            favorite_event_names = [fav.eventName for fav in favoritesEvent]
         else:
             favorite_event_names = []
         return render_template('detail.html', event=event, no=no, favoritesEvent=favorite_event_names)

@@ -65,7 +65,7 @@
             </form>
             {% elif session.user_id %}
                 {% if event.eventName in favoritesEvent %}
-                    <form method="POST" action="/mypage/delete/{{event.eventName}}">
+                    <form method="POST" action="/mypage/delete/{{no}}">
                         <input type="submit" name="deleteEvent" value="즐겨찾기 삭제">
                     </form>
                 {% else %}
