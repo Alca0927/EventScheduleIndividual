@@ -47,11 +47,11 @@
       </div>
       <div class="detail-container">                                <!--디테일 창 컨테이너-->
         
-        <img id="detailImage" src="#" alt="행사 사진" style="width:100%; max-height:200px; object-fit:cover;">
+        <img id="detailImage" src="{{ url_for('static', filename='pic/default.png') }}" alt="행사 사진" style="width:100%; max-height:200px; object-fit:cover;">
         <h2 id="detailEventName">행사 제목</h2>
         <p id="detailLocation">행사 위치</p>
         <p id="detailExplain">행사 설명</p>
-        <form id='deleteEventName' action="/mypage/delete/deleteEventName" method="POST">     <!--즐겨찾기 삭제 폼-->
+        <form id='deleteEventName' method="POST">     <!--즐겨찾기 삭제 폼-->
           <button type="submit" value="삭제">즐겨찾기 삭제</button>
         </form>
       </div>
@@ -74,8 +74,9 @@
     
     // 정렬된 각 이벤트에 대해 날짜 및 이벤트 정보를 달력에 표시하는 함수 호출
     myEvents.forEach(event => {
-      setDate(event.startDate, event.endDate, event.eventName, event.location, event.explain, event.image);
+      setDate(event.startDate, event.endDate, event.eventName, event.location, event.explain, event.image, event.no);
     });
+
   </script>
   <script src="/static/js/calendar.js"></script>
 </body>

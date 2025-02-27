@@ -66,7 +66,8 @@ function updateCalendarEvents() {
       event.eventName,   // 행사 이름
       event.location,    // 행사 위치
       event.explain,     // 행사 설명
-      event.image        // 행사 이미지 경로 (예: "fall.png")
+      event.image,        // 행사 이미지 경로 (예: "fall.png")
+      event.no
     );
   });
 }
@@ -120,8 +121,9 @@ nextBtn.addEventListener("click", () => {
  * @param {string} location   - 행사 위치
  * @param {string} explain    - 행사 설명
  * @param {string} image      - 행사 이미지 파일명 (예: "fall.png")
+ * @param {string} no
  */
-function setDate(startDate, endDate, eventName, location, explain, image) {
+function setDate(startDate, endDate, eventName, location, explain, image,no) {
   // startDate와 endDate를 Date 객체로 변환
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -133,6 +135,7 @@ function setDate(startDate, endDate, eventName, location, explain, image) {
   // 달력에서 날짜 셀(클래스가 .date이면서 .empty가 아닌 셀들) 선택
   // => 실제 날짜가 있는 셀들만 대상
   const dateCells = calendarDates.querySelectorAll('.date:not(.empty)');
+
   
   // 각 날짜 셀을 순회
   dateCells.forEach(cell => {
@@ -161,7 +164,8 @@ function setDate(startDate, endDate, eventName, location, explain, image) {
       eventBar.dataset.location = location;
       eventBar.dataset.explain = explain;
       eventBar.dataset.image = image;
-      
+      eventBar.dataset.no = no;
+ 
       // 이벤트를 클릭하면 detail-container에 상세 정보 표시
       eventBar.addEventListener("click", () => {
         // imagePath를 실제로 사용 가능한 경로로 만든다
@@ -170,6 +174,8 @@ function setDate(startDate, endDate, eventName, location, explain, image) {
         document.getElementById("detailEventName").textContent = eventName;
         document.getElementById("detailLocation").textContent = "위치: " + location;
         document.getElementById("detailExplain").textContent = "설명: " + explain;
+        document.getElementById("deleteEventName").action = `mypage/delete/${no}`;
+        // document.getElementById("deleteEventName"). ; // 즐겨찾기 삭제 action
       });
 
       // 이미 이 날짜 셀에 다른 이벤트들이 들어 있을 수 있으므로

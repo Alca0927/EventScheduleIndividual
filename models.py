@@ -15,19 +15,13 @@ class Event(db.Model) :   # 이벤트 목록
     image = db.Column(db.String(1000))
 
     def __repr__(self):
-        return f'<Event {self.title}>'
+        return f'<Event {self.no}>'
 
 class mypage(UserMixin, db.Model):   # Mypage
     no = db.Column(db.Integer,primary_key=True,nullable=False )
     id = db.Column(db.String(20), nullable=False)
-    my_name = db.Column(db.String(50), nullable=False) 
-    my_eventName = db.Column(db.String(50),nullable=False)
-    my_startDate = db.Column(db.String(20), nullable=False)
-    my_endDate = db.Column(db.String(20), nullable=False)
-    my_location = db.Column(db.String(100), nullable=False)
-    my_explain = db.Column(db.String(1000), nullable=False)
-    my_image = db.Column(db.String(1000))
-
+    eventName = db.Column(db.String(50),nullable=False)
+    
 class members(UserMixin, db.Model):    # 회원 Master
     id = db.Column(db.String(20), primary_key=True, nullable=False)
     username = db.Column(db.String(100), nullable=False)
